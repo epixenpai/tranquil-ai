@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to PMIS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            position: relative; /* Added for positioning copyright */
+        }
+
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: blur(19px);
+        }
+
+        .landing-container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7); /* Changed to a semi-transparent black */
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: auto;
+            margin-top: 35px; /* Raised the container */
+        }
+
+        .landing-container header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            animation: fadeIn 2.4s; /* Animation for header */
+        }
+
+        .landing-container img {
+            width: 150px;
+            margin-bottom: 20px;
+            animation: logoAnimation 1s ease; /* Animation for logo */
+        }
+
+        .sticker-effect {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            font-weight: bold;
+            opacity: 0; /* Start hidden */
+            animation: slideIn 1s forwards; /* Animation for sticker effect */
+            transform: translateY(20px); /* Start below */
+        }
+
+        .landing-container section p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            text-shadow: 0 0 5px rgba(0, 155, 155, 0.1), 0 0 10px rgba(0, 100, 155, 0.1);
+            font-weight: bold;
+            opacity: 0; /* Start hidden */
+            animation: appear 1s forwards; /* Animation for other paragraphs */
+        }
+
+        .landing-container section p:nth-child(1) {
+            animation-delay: 0.5s; /* Delay for first paragraph */
+        }
+
+        .landing-container section p:nth-child(2) {
+            animation-delay: 1s; /* Delay for second paragraph */
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            animation: fadeIn 2s forwards; /* Animation for button */
+            opacity: 0; /* Start hidden */
+            animation-delay: 1.5s; /* Delay for button */
+        }
+
+        button:hover {
+            background-color: #0073e6;
+        }
+
+        .menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2; /* Ensure it appears above the video */
+        }
+
+        .menu-button {
+            background: rgba(255, 255, 255, 0);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-items {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 60px; /* Adjust as needed */
+            left: 0;
+            background: rgba(30, 30, 30, 0.9); /* Dark background */
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 3; /* Above everything */
+        }
+
+        .menu-items a {
+            display: block;
+            padding: 8px;
+            color: #fff;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .menu-items a:hover {
+            background: rgba(0, 132, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px); /* Move up */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); /* Final position */
+            }
+        }
+
+        @keyframes appear {
+            0% {
+                transform: translateY(50px); /* Start below */
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5; /* Halfway */
+            }
+            100% {
+                transform: translateY(0); /* Final position */
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(50px); /* Start below */
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0); /* Final position */
+                opacity: 1;
+            }
+        }
+
+        @keyframes logoAnimation {
+            0% {
+                transform: scale(0.8); /* Start small */
+                opacity: 0; /* Start hidden */
+            }
+            50% {
+                opacity: 0.5; /* Halfway */
+            }
+            100% {
+                transform: scale(1); /* Final size */
+                opacity: 1; /* Fully visible */
+            }
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 20px; /* Positioned at the bottom of the page */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="video-background">
+        <source src="https://static.vecteezy.com/system/resources/previews/050/152/079/mp4/abstract-blue-and-white-horizontal-lines-creating-a-futuristic-digital-flow-effect-free-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="menu">
+        <button class="menu-button" onclick="toggleMenu()">&#9776;</button>
+        <div class="menu-items" id="menuItems">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/privacy">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="landing-container">
+        <header>
+            <img src="https://www.pincushion.in/wp-content/uploads/elementor/thumbs/fl-q16wtwqo0mborjw7f10dbpel2twee2tbl7i3nc7kdk.png" alt="PMIS Logo">
+            <h1>Welcome to Tranquil AI!</h1>
+        </header>
+        <section>
+            <p class="sticker-effect">This website is a demonstration of an AI that runs based on our School Director- Ms.Aarthi Murali's persona, offering mental health support services and answering your queries regarding our school.</p>
+            <p>Feel free to test it out! and please be open to provide any valuable suggestions! :)</p>
+        </section>
+        <button style="animation-delay: 2s;" onclick="location.href='/chat'">Start Chat</button> <!-- Delayed appearance -->
+    </div>
+
+    <div class="copyright">
+        &copy; Tranquil AI.inc 2023-2024 | Made with 💻✨ by Armaan
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menuItems = document.getElementById('menuItems');
+            if (menuItems.style.display === "block") {
+                menuItems.style.display = "none";
+            } else {
+                menuItems.style.display = "block";
+            }
+        }
+    </script>
+</body>
+</html>
+

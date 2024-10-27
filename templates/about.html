@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - PMIS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            position: relative; /* Added for positioning copyright */
+        }
+
+        .video-background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            filter: blur(19px);
+        }
+
+        .landing-container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7); /* Changed to a semi-transparent black */
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 1;
+            max-width: 800px; /* Increased max width for more content */
+            margin: auto;
+            margin-top: 35px; /* Raised the container */
+        }
+
+        .landing-container header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            animation: fadeIn 2.4s; /* Animation for header */
+        }
+
+        .landing-container section {
+            margin-top: 20px;
+        }
+
+        .landing-container section p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            font-family: 'Roboto', sans-serif;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            text-shadow: 0 0 5px rgba(0, 155, 155, 0.1), 0 0 10px rgba(0, 100, 155, 0.1);
+            font-weight: bold;
+            opacity: 0; /* Start hidden */
+            animation: appear 1s forwards; /* Animation for other paragraphs */
+        }
+
+        .landing-container section p:nth-child(1) {
+            animation-delay: 0.5s; /* Delay for first paragraph */
+        }
+
+        .landing-container section p:nth-child(2) {
+            animation-delay: 1s; /* Delay for second paragraph */
+        }
+
+        .landing-container section p:nth-child(3) {
+            animation-delay: 1.5s; /* Delay for third paragraph */
+        }
+
+        .landing-container section p:nth-child(4) {
+            animation-delay: 2s; /* Delay for fourth paragraph */
+        }
+
+        .menu {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 2; /* Ensure it appears above the video */
+        }
+
+        .menu-button {
+            background: transparent; /* Transparent background */
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            width: 40px; /* Fixed width */
+            height: 40px; /* Fixed height */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-button div {
+            width: 30px; /* Width of lines */
+            height: 3px; /* Height of lines */
+            background-color: #ffffff; /* White lines */
+            margin: 2px 0; /* Space between lines */
+            transition: all 0.3s ease; /* Transition for animations */
+        }
+
+        .menu-items {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 60px; /* Adjust as needed */
+            left: 0;
+            background: rgba(30, 30, 30, 0.9); /* Dark background */
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 3; /* Above everything */
+        }
+
+        .menu-items a {
+            display: block;
+            padding: 8px;
+            color: #fff;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .menu-items a:hover {
+            background: rgba(0, 132, 255, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px); /* Move up */
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0); /* Final position */
+            }
+        }
+
+        @keyframes appear {
+            0% {
+                transform: translateY(50px); /* Start below */
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.5; /* Halfway */
+            }
+            100% {
+                transform: translateY(0); /* Final position */
+                opacity: 1;
+            }
+        }
+
+        .copyright {
+            position: absolute;
+            bottom: 20px; /* Positioned at the bottom of the page */
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            const menuItems = document.getElementById('menuItems');
+            if (menuItems.style.display === 'block') {
+                menuItems.style.display = 'none';
+            } else {
+                menuItems.style.display = 'block';
+            }
+        }
+    </script>
+</head>
+<body>
+    <video autoplay muted loop class="video-background">
+        <source src="https://static.vecteezy.com/system/resources/previews/050/152/079/mp4/abstract-blue-and-white-horizontal-lines-creating-a-futuristic-digital-flow-effect-free-video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <div class="menu">
+        <button class="menu-button" onclick="toggleMenu()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </button>
+        <div class="menu-items" id="menuItems">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/privacy">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="landing-container">
+        <header>
+            <h1>About Us</h1>
+        </header>
+        <section>
+            <p>Welcome to the PMIS Tranquil AI! Our AI system is designed to emulate the persona of our esteemed School Director, Ms. Aarthi Murali.</p>
+            <p>At Tranquil AI, we are dedicated to providing mental health support services and addressing any queries related to our school environment. Our mission is to foster a safe, inclusive, and nurturing atmosphere for all students.</p>
+            <p>Tranquil AI offers real-time assistance and resources, helping students navigate their emotional and academic challenges. Whether you need guidance, information, or just someone to talk to, Tranquil AI is here for you.</p>
+            <p>We are proud to be a part of Pincushion School (PMIS), where excellence in education and student well-being is our utmost priority. Your well-being is our priority, and we are here to help you navigate any challenges you may face.</p>
+        </section>
+    </div>
+
+    <div class="copyright">
+        &copy; Tranquil AI.inc 2023-2024 | Made with 💻✨ by Armaan
+    </div>
+</body>
+</html>
+

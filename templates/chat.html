@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PMIS AI Chat</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: url('https://preview.redd.it/hwz32a6uyih81.gif?width=1000&auto=webp&s=ed6bc4df795edc3dcd4a99e3d4908b346dfd0d8c') no-repeat center center fixed; /* Replace with your GIF */
+            background-size: cover;
+            backdrop-filter: blur(12px); /* Blur effect on background */
+        }
+
+        .chat-container {
+            width: 95%;
+            max-width: 900px;
+            height: 95vh;
+            background: rgba(30, 30, 30, 0.2); /* Dark background with transparency */
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(2.9, 0.9, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h1 {
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            margin: 5px 0;
+            position: relative;
+        }
+
+        .message.user {
+            background-color: #0084ff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .message.ai {
+            background-color: #444;
+            color: #f0f0f0;
+            align-self: flex-start;
+        }
+
+        .message .timestamp {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            color: #cccccc;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #444;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #444;
+            border-radius: 24px;
+            font-size: 1rem;
+            background-color: #333; /* Dark input background */
+            color: #ffffff; /* White text */
+        }
+
+        .chat-input button {
+            padding: 12px 24px;
+            background-color: #0084ff;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-input button:hover {
+            background-color: #0073e6;
+        }
+
+        .chat-input button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .typing-bubble {
+            display: none;
+            align-self: flex-start;
+            background-color: #555;
+            border-radius: 20px;
+            padding: 10px 15px;
+            margin: 5px 0;
+            position: relative;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .audio-control {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .audio-control svg {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <img src="https://www.pincushion.in/wp-content/uploads/2023/05/director_o.png" alt="Logo" style="width: 85px; height: 85px; border-radius: 50%; margin-right: 8px;"> 
+            <h1 style="font-size: 17px; font-family: 'Poppins', sans-serif; margin: -50; margin-right: 719px; white-space: nowrap;">Director-PMIS</h1>
+            <button class="audio-control" id="audio-toggle" onclick="toggleMute()">
+                <svg id="volume-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" fill="white"></path>
+                </svg>
+            </button>
+        </div>
+        <div class="chat-messages" id="messages"></div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type your message...." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="sendButton">Send!</button>
+        </div>
+        <audio id="audioPlayer"></audio>
+    </div>
+
+    <script>
+        let isMuted = false; // Variable to track audio state
+        const audioPlayer = document.getElementById('audioPlayer');
+        const messagesContainer = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+
+        function toggleMute() {
+            isMuted = !isMuted; // Toggle audio state
+            const volumeIcon = document.getElementById('volume-icon');
+            if (isMuted) {
+                volumeIcon.innerHTML = `
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white"></polygon>
+                    <line x1="23" y1="9" x2="17" y2="15" stroke="white" stroke-width="2"></line>
+                    <line x1="17" y1="9" x2="23" y2="15" stroke="white" stroke-width="2"></line>
+                `;
+            } else {
+                volumeIcon.innerHTML = `
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="white"></polygon>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" fill="white"></path>
+                `;
+            }
+        }
+
+        function addMessage(text, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+            
+            const messageText = document.createElement('div');
+            messageText.textContent = text;
+            
+            const timestamp = document.createElement('div');
+            timestamp.className = 'timestamp';
+            timestamp.textContent = new Date().toLocaleTimeString();
+            
+            messageDiv.appendChild(messageText);
+            messageDiv.appendChild(timestamp);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+      async function sendMessage() {
+	    const message = messageInput.value.trim();
+	    if (!message) return;
+
+	    messageInput.disabled = true;
+	    sendButton.disabled = true;
+
+	    addMessage(message, true);
+	    messageInput.value = '';
+
+	    const typingBubble = document.createElement('div');
+	    typingBubble.className = 'typing-bubble';
+	    typingBubble.textContent = 'AI is typing...';
+	    messagesContainer.appendChild(typingBubble);
+	    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+	    typingBubble.style.display = 'block';
+
+	    try {
+		const response = await axios.post('/send_message', { message, audio_enabled: !isMuted });
+
+		messagesContainer.removeChild(typingBubble);
+		addMessage(response.data.response, false);
+
+		if (response.data.audio_url && !isMuted) {
+		    audioPlayer.src = response.data.audio_url;
+		    await audioPlayer.load();
+		    await audioPlayer.play().catch(error => {
+		        console.error('Error playing audio:', error);
+		    });
+		}
+	    } catch (error) {
+		console.error('Error:', error);
+		messagesContainer.removeChild(typingBubble);
+		addMessage('Sorry, there was an error processing your message.', false);
+	    } finally {
+		messageInput.disabled = false;
+		sendButton.disabled = false;
+		messageInput.focus();
+	    }
+	}
+
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
+
